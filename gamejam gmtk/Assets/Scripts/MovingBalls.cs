@@ -2,45 +2,52 @@ using UnityEngine;
 
 public class MovingBalls : MonoBehaviour
 {
-    public GameObject startPosition;
-    public GameObject endPosition;
-    public Rigidbody rb;
+    public Transform startPosition;
+    public Transform endPosition;
     public float rbforce = 5f;
+    public float teleportDistance = 0.5f;
 
-    private void Start()
+    private Rigidbody rb;
+
+    void Start()
     {
         rb = GetComponent<Rigidbody>();
-        ResetPositionAndMove();
+        ResetPosition();
+        ApplyForceTowardEnd();
     }
 
-    private void FixedUpdate()
+    void FixedUpdate()
     {
+        Vector3 toEnd = endPosition.position - transform.position;
+        toEnd.y = 0f;
 
-        float distance = Vector3.Distance(transform.position, endPosition.transform.position);
-        Vector3 rawDirection = endPosition.transform.position - transform.position;
-        rawDirection.y = 0f;
-        Vector3 direction = rawDirection.normalized;
+        rb.AddForce(toEnd.normalized * rbforce);
 
-        rb.AddForce(direction * rbforce);
-
-        if (distance < 0.5f) // 
+        if (toEnd.magnitude < teleportDistance)
         {
-            ResetPositionAndMove();
+            TeleportToStart();
         }
     }
 
-    void ResetPositionAndMove()
+    void TeleportToStart()
     {
+        rb.velocity = Vector3.zero;
+        rb.angularVelocity = Vector3.zero;
+        transform.position = startPosition.position;
+    }
 
-        rb.isKinematic = true;
-        transform.position = startPosition.transform.position;
-        rb.isKinematic = false;
+    void ResetPosition()
+    {
+        rb.velocity = Vector3.zero;
+        rb.angularVelocity = Vector3.zero;
+        transform.position = startPosition.position;
+    }
 
-
-        Vector3 rawDirection = endPosition.transform.position - transform.position;
-        rawDirection.y = 0f;
-        Vector3 direction = rawDirection.normalized;
-
-        rb.AddForce(direction * rbforce);
+    void ApplyForceTowardEnd()
+    {
+        Vector3 dir = (endPosition.position - transform.position);
+        dir.y = 0f;
+        rb.AddForce(dir.normalized * rbforce, ForceMode.Impulse);
     }
 }
+
