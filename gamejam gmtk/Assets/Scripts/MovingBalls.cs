@@ -2,52 +2,45 @@ using UnityEngine;
 
 public class MovingBalls : MonoBehaviour
 {
-    public Transform startPosition;
-    public Transform endPosition;
+    public GameObject startPosition;
+    public GameObject endPosition;
+    public Rigidbody rb;
     public float rbforce = 5f;
-    public float teleportDistance = 0.5f;
 
-    private Rigidbody rb;
-
-    void Start()
+    private void Start()
     {
         rb = GetComponent<Rigidbody>();
-        ResetPosition();
-        ApplyForceTowardEnd();
+        ResetPositionAndMove();
     }
 
-    void FixedUpdate()
+    private void FixedUpdate()
     {
-        Vector3 toEnd = endPosition.position - transform.position;
-        toEnd.y = 0f;
 
-        rb.AddForce(toEnd.normalized * rbforce);
+        float distance = Vector3.Distance(transform.position, endPosition.transform.position);
+        Vector3 rawDirection = endPosition.transform.position - transform.position;
+        rawDirection.y = 0f;
+        Vector3 direction = rawDirection.normalized;
 
-        if (toEnd.magnitude < teleportDistance)
+        rb.AddForce(direction * rbforce);
+
+        if (distance < 0.5f) // 
         {
-            TeleportToStart();
+            ResetPositionAndMove();
         }
     }
 
-    void TeleportToStart()
+    void ResetPositionAndMove()
     {
-        rb.velocity = Vector3.zero;
-        rb.angularVelocity = Vector3.zero;
-        transform.position = startPosition.position;
-    }
 
-    void ResetPosition()
-    {
-        rb.velocity = Vector3.zero;
-        rb.angularVelocity = Vector3.zero;
-        transform.position = startPosition.position;
-    }
+        rb.isKinematic = true;
+        transform.position = startPosition.transform.position;
+        rb.isKinematic = false;
 
-    void ApplyForceTowardEnd()
-    {
-        Vector3 dir = (endPosition.position - transform.position);
-        dir.y = 0f;
-        rb.AddForce(dir.normalized * rbforce, ForceMode.Impulse);
+
+        Vector3 rawDirection = endPosition.transform.position - transform.position;
+        rawDirection.y = 0f;
+        Vector3 direction = rawDirection.normalized;
+
+        rb.AddForce(direction * rbforce);
     }
 }
-
