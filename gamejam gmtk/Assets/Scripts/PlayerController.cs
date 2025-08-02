@@ -1,108 +1,63 @@
 using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody))]
-public class PlayerController : MonoBehaviour
+[RequireComponent(typeof(CharacterController))]
+public class FPSController : MonoBehaviour
 {
-    public float moveForce = 50f;
-    public float maxSpeed = 5f;
-    public float jumpForce = 6f;
-    public float mouseSensitivity = 3f;
+    public float moveSpeed = 5f;
+    public float mouseSensitivity = 70f;
+    public float jumpHeight = 1.5f;
+    public float gravity = -9.81f;
+    public Transform cameraTransform;
 
+    private CharacterController controller;
+    private Vector3 velocity;
+    private bool isGrounded;
+    private float xRotation = 0f;
 
-    [SerializeField] float bobAmount = 0.05f;
-    [SerializeField] float bobSpeed = 8f;
-
-    private float bobTimer = 0f;
-    private Vector3 camStartLocalPos;
-
-
-
-
-    public Transform cameraHolder;
-
-    private Rigidbody rb;
-    private bool isGrounded = false;
+    public Transform groundCheck;
+    public float groundDistance = 0.4f;
+    public LayerMask groundMask;
 
     void Start()
     {
-        rb = GetComponent<Rigidbody>();
+        controller = GetComponent<CharacterController>();
         Cursor.lockState = CursorLockMode.Locked;
-    }
-
-    void FixedUpdate()
-    {
-        Move();
     }
 
     void Update()
     {
-        Rotate();
-        Jump();
-        HeadBob();
-    }
+        // Kamera hareketi
+        float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime;
+        float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity * Time.deltaTime;
 
-    void Move()
-    {
-        float h = Input.GetAxis("Horizontal");
-        float v = Input.GetAxis("Vertical");
+        xRotation -= mouseY;
+        xRotation = Mathf.Clamp(xRotation, -90f, 90f);
 
-        Vector3 inputDir = new Vector3(h, 0, v).normalized;
-        Vector3 moveDir = cameraHolder.TransformDirection(inputDir);
-        moveDir.y = 0;
+        cameraTransform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
+        transform.Rotate(Vector3.up * mouseX);
 
-        if (rb.velocity.magnitude < maxSpeed)
-            rb.AddForce(moveDir * moveForce);
-    }
-
-    void Rotate()
-    {
-        float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity;
-        transform.Rotate(0f, mouseX, 0f);
-    }
-
-    void Jump()
-    {
-        if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
+        // Zemin kontrolü
+        isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
+        if (isGrounded && velocity.y < 0)
         {
-            rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
-            isGrounded = false;
+            velocity.y = -2f;
         }
-    }
-    void HeadBob()
-    {
-        Vector3 flatVelocity = rb.velocity;
-        flatVelocity.y = 0;
 
-        if (flatVelocity.magnitude > 0.1f && isGrounded)
-        {
-            bobTimer += Time.deltaTime * bobSpeed;
-            float newY = camStartLocalPos.y + Mathf.Sin(bobTimer) * bobAmount;
-            Vector3 newPos = new Vector3(camStartLocalPos.x, newY, camStartLocalPos.z);
-            cameraHolder.localPosition = newPos;
-        }
-        else
-        {
-            // Yavaþça baþlangýç pozisyonuna dön
-            cameraHolder.localPosition = Vector3.Lerp(cameraHolder.localPosition, camStartLocalPos, Time.deltaTime * 5f);
-            bobTimer = 0f;
-        }
-    }
+        // Hareket
+        float x = Input.GetAxis("Horizontal");
+        float z = Input.GetAxis("Vertical");
+        Vector3 move = transform.right * x + transform.forward * z;
 
-void OnCollisionStay(Collision collision)
-    {
-        foreach (var contact in collision.contacts)
-        {
-            if (Vector3.Dot(contact.normal, Vector3.up) > 0.5f)
-            {
-                isGrounded = true;
-                return;
-            }
-        }
-        isGrounded = false;
-    }
+        controller.Move(move * moveSpeed * Time.deltaTime);
 
-    void OnCollisionExit(Collision collision)
-    {
-        isGrounded = false;
+        // Zýplama
+        if (Input.GetButtonDown("Jump") && isGrounded)
+        {
+            velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
+        }
+
+        // Yerçekimi
+        velocity.y += gravity * Time.deltaTime;
+        controller.Move(velocity * Time.deltaTime);
     }
 }
