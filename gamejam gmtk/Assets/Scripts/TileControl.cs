@@ -2,11 +2,11 @@ using UnityEngine;
 
 public class TileControl : MonoBehaviour
 {
-    public PlatformManager platformManager;              // PlatformManager referansý
-    public int platformIndexToControl = 0;               // Bu tile hangi platformu kontrol ediyor
-    public float moveSpeed = 2f;                         // Platform hareket hýzý
-    public ButtonManager.WhatDoesButtonDo action;        // Yön veya eylem
-    public float pressDepth = 0.3f;                      // Basýlýnca ne kadar aþaðý iner
+    public PlatformManager platformManager;
+    public int platformIndexToControl = 0;
+    public float moveSpeed = 2f;
+    public ButtonManager.WhatDoesButtonDo action;
+    public float pressDepth = 0.3f;
     private Vector3 initialPosition;
     private bool isPressed = false;
 
@@ -19,13 +19,9 @@ public class TileControl : MonoBehaviour
     {
         if (isPressed && platformManager != null)
         {
-            if (action == ButtonManager.WhatDoesButtonDo.Change)
+            if (action != ButtonManager.WhatDoesButtonDo.Change) // Artýk C kontrolü burada deðil
             {
-                platformManager.TogglePlatform(); // Aktif platformu deðiþtir
-            }
-            else
-            {
-                GameObject platform = platformManager.GetActivePlatform(); // Mevcut aktif platformu al
+                GameObject platform = platformManager.GetActivePlatform();
                 if (platform != null)
                 {
                     Vector3 direction = GetDirection(action);
@@ -70,7 +66,7 @@ public class TileControl : MonoBehaviour
         isPressed = false;
         transform.position = initialPosition;
     }
-
 }
+
 
 
