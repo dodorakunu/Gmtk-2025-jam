@@ -8,7 +8,4 @@ EditorBuildSettings:
   - enabled: 1
     path: "Assets/Scenes/Yi\u011Fit 2.unity"
     guid: 00a8a7cacbf884a45af38bbf2c3e8490
-  - enabled: 1
-    path: Assets/Scenes/Level2.unity
-    guid: 5619aa7b33242324282b7e7acb74e3c2
   m_configObjects: {}
