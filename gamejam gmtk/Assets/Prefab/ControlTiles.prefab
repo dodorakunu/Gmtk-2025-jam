@@ -13,7 +13,6 @@ GameObject:
   - component: {fileID: 8074565312346760800}
   - component: {fileID: 977964946560734544}
   - component: {fileID: 3542396845672132011}
-  - component: {fileID: 1179134444441535326}
   m_Layer: 0
   m_Name: ControlTiles
   m_TagString: Untagged
@@ -119,19 +118,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a32c515c08f1ba4489e7ec7bf8283813, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Platform: {fileID: 0}
+  platformManager: {fileID: 0}
+  platformIndexToControl: 0
+  moveSpeed: 2
   action: 0
---- !u!114 &1179134444441535326
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8392215499102721132}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 415cf99dcd562c2458179f59786c8375, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  isPressed: 0
-  pressDepth: 0.3
+  pressDepth: 0.4

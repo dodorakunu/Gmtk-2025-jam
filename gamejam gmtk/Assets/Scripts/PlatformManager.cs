@@ -2,18 +2,18 @@ using UnityEngine;
 
 public class PlatformManager : MonoBehaviour
 {
-    public GameObject[] platforms; // Sahnedeki platformlarý buraya at
+    public GameObject[] platforms;
+    private int activePlatformIndex = 0;
 
-    private int activeIndex = 0;
+    public GameObject GetActivePlatform()
+    {
+        if (platforms.Length == 0) return null;
+        return platforms[activePlatformIndex];
+    }
 
-    public void TogglePlatforms()
+    public void TogglePlatform()
     {
         if (platforms.Length < 2) return;
-
-        platforms[activeIndex].SetActive(false); // Mevcut aktifi kapat
-
-        activeIndex = (activeIndex + 1) % platforms.Length; // Sýradakini seç
-
-        platforms[activeIndex].SetActive(true); // Yeni aktifi aç
+        activePlatformIndex = (activePlatformIndex + 1) % platforms.Length;
     }
 }

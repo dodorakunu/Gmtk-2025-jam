@@ -2,30 +2,36 @@ using UnityEngine;
 
 public class TileControl : MonoBehaviour
 {
-    public GameObject Platform;
-    public PlatformManager platformManager; 
-
-    public float moveSpeed = 2f;
-    public ButtonManager.WhatDoesButtonDo action;
-    public float pressDepth = 0.3f;
-    public Vector3 initialPosition;
-
+    public PlatformManager platformManager;              // PlatformManager referansý
+    public int platformIndexToControl = 0;               // Bu tile hangi platformu kontrol ediyor
+    public float moveSpeed = 2f;                         // Platform hareket hýzý
+    public ButtonManager.WhatDoesButtonDo action;        // Yön veya eylem
+    public float pressDepth = 0.3f;                      // Basýlýnca ne kadar aþaðý iner
+    private Vector3 initialPosition;
     private bool isPressed = false;
+
     private void Start()
     {
         initialPosition = transform.position;
-        
     }
 
     private void Update()
     {
-        if (isPressed && Platform != null)
+        if (isPressed && platformManager != null)
         {
-            Vector3 direction = GetDirection(action);
-            Platform.transform.position += direction * moveSpeed * Time.deltaTime;
-        }
-        if (isPressed && Platform != null && action == ButtonManager.WhatDoesButtonDo.Change) {
-            PlatformChange();
+            if (action == ButtonManager.WhatDoesButtonDo.Change)
+            {
+                platformManager.TogglePlatform(); // Aktif platformu deðiþtir
+            }
+            else
+            {
+                GameObject platform = platformManager.GetActivePlatform(); // Mevcut aktif platformu al
+                if (platform != null)
+                {
+                    Vector3 direction = GetDirection(action);
+                    platform.transform.position += direction * moveSpeed * Time.deltaTime;
+                }
+            }
         }
     }
 
@@ -64,13 +70,7 @@ public class TileControl : MonoBehaviour
         isPressed = false;
         transform.position = initialPosition;
     }
-    void PlatformChange()
-    {
-        if (platformManager != null)
-        {
-            platformManager.TogglePlatforms();
-        }
-    }
 
 }
+
 
