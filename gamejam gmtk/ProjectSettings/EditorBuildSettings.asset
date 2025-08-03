@@ -6,6 +6,21 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: "Assets/Scenes/Yi\u011Fit 2.unity"
+    path: Assets/Scenes/MainMenu.unity
+    guid: 7a9961a66ed1842419a66442631865a4
+  - enabled: 1
+    path: Assets/Scenes/Tutorial.unity
     guid: 00a8a7cacbf884a45af38bbf2c3e8490
+  - enabled: 1
+    path: "Assets/Scenes/An\u0131l Level2.unity"
+    guid: 282ffa6dc15cb374a8a83ec543a34310
+  - enabled: 1
+    path: "Assets/Scenes/An\u0131l Level3.unity"
+    guid: 4fd440276b1afd047aedab148b25a67c
+  - enabled: 1
+    path: Assets/Scenes/Levels Menu.unity
+    guid: 76aa34f0e85bc5b409972b07eca2d475
+  - enabled: 1
+    path: Assets/Scenes/End Menu.unity
+    guid: de660b9b25cdb094488711dfdbd9cf06
   m_configObjects: {}
